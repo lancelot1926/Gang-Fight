@@ -3,7 +3,11 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - PartyHolder
+  - Buff-Debuff
+  - Avatar
+  - Obstcale
   layers:
   - Default
   - TransparentFX
