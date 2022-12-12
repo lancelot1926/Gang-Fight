@@ -12,12 +12,19 @@ public class GameHandler : MonoBehaviour
     public bool permission1;
     public int PCloneCounter;
     public int PCloneLimit;
+    public bool partyOnGround;
+    public ColorManager currentPalette;
 
     private Vector3 lastEndPosition;
+    private GameObject EndLine;
     [SerializeField] private Transform levelPartStart;
     [SerializeField] private List<Transform> levelPartList;
     public Transform EndLevelPart1;
-    
+
+
+    public PaletteData pdata;
+    public string paletteDataFileName;
+    public List<PaletteData> paletteDataList=new List<PaletteData>();
 
     void Start()
     {
@@ -25,6 +32,8 @@ public class GameHandler : MonoBehaviour
         lastEndPosition = levelPartStart.Find("EndPosition").position;
         //SpawnLevel();
         LevelBuilder(5);
+        pdata = SaveSystem.ReadFromJSON<PaletteData>(paletteDataFileName);
+        
 
 
 
@@ -36,7 +45,11 @@ public class GameHandler : MonoBehaviour
         if (PCloneCounter < PCloneLimit)
         {
 
-            SpawnPClone();
+            if (partyOnGround == true)
+            {
+                SpawnPClone();
+            }
+            
 
 
         }
@@ -48,8 +61,19 @@ public class GameHandler : MonoBehaviour
 
 
         }
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            pdata = new PaletteData(currentPalette);
+            SaveSystem.SaveToJSON<PaletteData>(pdata, paletteDataFileName);
 
-        
+            PaletteData palette= new PaletteData(currentPalette);
+            paletteDataList.Add(palette);
+            SaveSystem.SaveToJSON<PaletteData>(paletteDataList, "listdata.json");
+
+
+        }
+        //Debug.Log(partyOnGround);
+        //debug.log(partyOnGround);
     }
 
 
@@ -114,11 +138,14 @@ public class GameHandler : MonoBehaviour
     {
         Transform lastLevelPosition = SpawnLevelPart(lastEndPosition);
         lastEndPosition = lastLevelPosition.Find("EndPosition").position;
+        EndLine = lastLevelPosition.Find("EndLine").gameObject;
     }
     private void SpawnFinish()
     {
-        Transform spawnedEnd =Instantiate(EndLevelPart1,lastEndPosition + new Vector3(0, -10, 10), Quaternion.identity);
+        Transform spawnedEnd =Instantiate(EndLevelPart1,lastEndPosition + new Vector3(0, -10, 11), Quaternion.identity);
         spawnedEnd.eulerAngles = new Vector3(0, 180, 0);
+        EndLine.SetActive(true);
+        
         
     }
     private Transform SpawnLevelPart(Vector3 spawnPosition)

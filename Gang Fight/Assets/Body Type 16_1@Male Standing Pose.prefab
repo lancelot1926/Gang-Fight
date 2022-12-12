@@ -391,6 +391,14 @@ MonoBehaviour:
   moveX: 0
   moveY: 0
   moveZ: 0
+  colorBomb:
+  - {fileID: 8156196992897016569, guid: f046e6d6b5e2db849b373a7c84cbe71b, type: 3}
+  - {fileID: 2973096311365581649, guid: b60a6016b05d15c448833b02cc963fe0, type: 3}
+  - {fileID: 7633836978585705214, guid: f0b89c5a3fa0ead4ca30dec0fbbee7d2, type: 3}
+  - {fileID: 5304447205838076871, guid: 99ac34ea6610a684a8558781efab92f9, type: 3}
+  - {fileID: 2877979551147469903, guid: 839df1076f065684e9b4984c793ec3d2, type: 3}
+  - {fileID: 3898168977120216739, guid: fa8cab5eb37516a489c6738120e006dc, type: 3}
+  - {fileID: 6196575695737013158, guid: 00c7fc258244d1c479e83cd2bb068e58, type: 3}
 --- !u!1 &2446567926978934541
 GameObject:
   m_ObjectHideFlags: 0

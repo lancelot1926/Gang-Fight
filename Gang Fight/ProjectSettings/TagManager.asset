@@ -8,6 +8,9 @@ TagManager:
   - Buff-Debuff
   - Avatar
   - Obstcale
+  - Ground
+  - Palette
+  - EndLine
   layers:
   - Default
   - TransparentFX

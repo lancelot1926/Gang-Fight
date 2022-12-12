@@ -1800,6 +1800,8 @@ MonoBehaviour:
   permission1: 0
   PCloneCounter: 0
   PCloneLimit: 1
+  partyOnGround: 0
+  currentPalette: {fileID: 0}
   levelPartStart: {fileID: 506483514}
   levelPartList:
   - {fileID: 2411141574174688017, guid: 77743595a63829045bb12d776d3758a6, type: 3}
@@ -1809,6 +1811,10 @@ MonoBehaviour:
   - {fileID: 5699177726673340314, guid: e579ecd56f12fcc4b9424b79aa7a06b3, type: 3}
   EndLevelPart1: {fileID: 1305179996953431738, guid: 25203261b7293014bbeba9709e716bad,
     type: 3}
+  pdata:
+    picName: 
+    rgbaValues: []
+  paletteDataFileName: PaletteData.json
 --- !u!4 &1404184349
 Transform:
   m_ObjectHideFlags: 0
@@ -2649,6 +2655,7 @@ MonoBehaviour:
   moveX: 0
   moveY: 0
   moveZ: 0
+  colorBomb: {fileID: 0}
 --- !u!65 &2022645243
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2682,7 +2689,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!95 &2046030461
 Animator:
   serializedVersion: 4
@@ -2794,6 +2801,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d80a73b4718e58c4d8a325afdbfb1472, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  picName: 
   droppedClones: 0
   material: {fileID: 0}
   r: 0
@@ -2804,6 +2812,7 @@ MonoBehaviour:
   maxg: 0
   maxb: 0
   maxa: 0
+  gmHandler: {fileID: 0}
 --- !u!1001 &238928997125337387
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2815,6 +2824,11 @@ PrefabInstance:
       propertyPath: m_Mass
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1166646249, guid: 481b3ec0b9325b244b0d18595f39fe4b, type: 3}
+      propertyPath: colorBomb
+      value: 
+      objectReference: {fileID: 2877979551147469903, guid: 839df1076f065684e9b4984c793ec3d2,
+        type: 3}
     - target: {fileID: 1166646249, guid: 481b3ec0b9325b244b0d18595f39fe4b, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -2912,6 +2926,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Plane
+      objectReference: {fileID: 0}
+    - target: {fileID: 1305179996953431361, guid: 25203261b7293014bbeba9709e716bad,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1305179996953431361, guid: 25203261b7293014bbeba9709e716bad,
+        type: 3}
+      propertyPath: m_TagString
+      value: Palette
       objectReference: {fileID: 0}
     - target: {fileID: 1305179996953431738, guid: 25203261b7293014bbeba9709e716bad,
         type: 3}

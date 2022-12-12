@@ -12,6 +12,8 @@ public class Movement : MonoBehaviour
     public float moveY;
     public float moveZ;
     private GameHandler gameHandler;
+    [SerializeField] private List<GameObject> colorBomb;
+    private Transform partyHolder;
 
     // Start is called before the first frame update
     void Start()
@@ -22,6 +24,7 @@ public class Movement : MonoBehaviour
             gameHandler.avatarList.Add(gameObject);
             gameHandler.PCloneCounter++;
         }
+        partyHolder = GameObject.Find("PartyHolder").transform;
     }
 
     // Update is called once per frame
@@ -67,44 +70,91 @@ public class Movement : MonoBehaviour
         
 
     }
+    /*private void colCheck(Collision col)
+    {
+        if (col.transform.tag == "Obstcale")
+        {
+            gameHandler.avatarList.Remove(gameObject);
+            gameHandler.PCloneLimit--;
+            Destroy(gameObject);
+        }
 
+        if (col.transform.tag == "Palette")
+        {
+            Debug.Log("!!!!!!!!!!!!");
+            Instantiate(colorBomb, partyHolder);
+            Destroy(gameObject);
+        }
+    }*/
     private void OnCollisionEnter(Collision collision)
     {
         if (gameObject.tag == "Avatar")
         {
-            if (collision.transform.tag == "Obstcale")
+            switch (collision.transform.tag)
             {
-                gameHandler.avatarList.Remove(gameObject);
-                gameHandler.PCloneLimit--;
-                Destroy(gameObject);
-            }
-            else
-            {
+                case "Palette":
+                    Debug.Log("!!!!!!!!!!!!");
+                    int randNum=Random.Range(0, colorBomb.Count);
+                    Instantiate(colorBomb[randNum], partyHolder);
+                    Destroy(gameObject);
+                    break;
+                case "Obstcale":
+                    Debug.Log("!!!!!!!!!!!!");
+                    gameHandler.avatarList.Remove(gameObject);
+                    gameHandler.PCloneLimit--;
+                    Destroy(gameObject);
+                    break;
+
+                
 
             }
+            /*if (collision.transform.tag == "Obstcale")
+            {
+                
+            }
+            
+            if (collision.transform.tag == "Palette")
+            {
+                
+            }*/
 
-           
         }
     }
     private void OnCollisionStay(Collision collision)
     {
-        /*if (gameObject.tag == "Avatar")
+        if (gameObject.tag == "Avatar")
         {
-            if (collision.transform.tag == "Obstcale")
+            if (collision.transform.tag == "Ground")
             {
                 //gameHandler.avatarList.Remove(gameObject);
-                gameHandler.PCloneLimit--;
+                gameHandler.partyOnGround = true;
                 //Destroy(gameObject);
             }
             else
             {
-
+                gameHandler.partyOnGround = false;
             }
-        }*/
+
+            //Debug.Log(collision.transform.tag);
+        }
+    }
+    private void OnCollisionExit(Collision collision)
+    {
+        if (gameObject.tag == "Avatar")
+        {
+            if (collision.transform.tag == "Ground")
+            {
+                //gameHandler.avatarList.Remove(gameObject);
+                gameHandler.partyOnGround = false;
+                //Destroy(gameObject);
+            }
+            
+        }
     }
 
     private void OnDestroy()
     {
         gameHandler.PCloneCounter--;
+        gameHandler.avatarList.Remove(gameObject);
     }
 }

@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1305179996953431742}
   m_Layer: 0
   m_Name: Plane
-  m_TagString: Untagged
+  m_TagString: Palette
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 1305179996953431361}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -10, z: 20}
-  m_LocalScale: {x: 2, y: 1, z: 2}
+  m_LocalScale: {x: 3, y: 1, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -111,6 +111,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d80a73b4718e58c4d8a325afdbfb1472, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  picName: Marin
   droppedClones: 0
   material: {fileID: 0}
   r: 0
@@ -121,3 +122,8 @@ MonoBehaviour:
   maxg: 0
   maxb: 0
   maxa: 0
+  gmHandler: {fileID: 0}
+  meshRenderer: {fileID: 0}
+  picList:
+  - {fileID: 2100000, guid: b832dec8d4d17dd4db6b1c72dbbd4d69, type: 2}
+  - {fileID: 2100000, guid: e518054a8e260db47af70a7f06cfe738, type: 2}
