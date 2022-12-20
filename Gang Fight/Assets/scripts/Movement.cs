@@ -15,6 +15,8 @@ public class Movement : MonoBehaviour
     [SerializeField] private List<GameObject> colorBomb;
     private Transform partyHolder;
 
+    private bool onGroundCheck;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -51,14 +53,26 @@ public class Movement : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            
+            for(int x = 0; x < gameHandler.avatarList.Count; x++)
+            {
+                if (gameHandler.avatarList[gameHandler.avatarList.Count-x-1].GetComponent<Movement>().onGroundCheck == true)
+                {
+                    //if(Time.deltaTime)
+                    gameHandler.avatarList[gameHandler.avatarList.Count - x-1].GetComponent<Rigidbody>().AddForce(new Vector3(0, 3, 0), ForceMode.Impulse);
+                }
+            }
             if (gameObject.tag == "Avatar")
             {
-                rigBody.AddForce(new Vector3(0, 7, 0), ForceMode.Impulse);
+                //rigBody.AddForce(new Vector3(0, 7, 0), ForceMode.Impulse);
             }
         }
 
         moveDir = new Vector3(moveX, moveY,moveZ).normalized*moveSpeed;
+        if (gameObject.tag == "Avatar")
+        {
+            //Debug.Log(onGroundCheck);
+        }
+        
     }
 
 
@@ -128,11 +142,14 @@ public class Movement : MonoBehaviour
             {
                 //gameHandler.avatarList.Remove(gameObject);
                 gameHandler.partyOnGround = true;
+                onGroundCheck= true;
+                
                 //Destroy(gameObject);
             }
             else
             {
                 gameHandler.partyOnGround = false;
+                onGroundCheck= false;
             }
 
             //Debug.Log(collision.transform.tag);
@@ -146,6 +163,7 @@ public class Movement : MonoBehaviour
             {
                 //gameHandler.avatarList.Remove(gameObject);
                 gameHandler.partyOnGround = false;
+                onGroundCheck = false;
                 //Destroy(gameObject);
             }
             

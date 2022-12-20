@@ -34,7 +34,7 @@ public class CameraFollow : MonoBehaviour
             target = GameObject.Find("Plane(Clone)").transform;
             //transform.Rotate(new Vector3(180, 0, 0));
             transform.eulerAngles = new Vector3(90, 0, 0);
-            offset = new Vector3(0, 30, 0);
+            offset = new Vector3(0, 60, 0);
         }
     }
 
@@ -44,6 +44,6 @@ public class CameraFollow : MonoBehaviour
         target = GameObject.Find("Plane(Clone)").transform;
         //transform.Rotate(new Vector3(180, 0, 0));
         transform.eulerAngles = new Vector3(90, 0, 0);
-        offset = new Vector3(0, 30, 0);
+        offset = new Vector3(0, 60, 0);
     }
 }

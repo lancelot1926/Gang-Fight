@@ -85,7 +85,9 @@ public class GameHandler : MonoBehaviour
         //MainPAvatar.GetComponent<Rigidbody>().isKinematic = true;
         float x = Random.Range(-0.5f, 0.5f);
         float z = Random.Range(-0.5f, 0.5f);
-        Vector3 newCom=new Vector3(x,0,z);
+        Vector3 newCom=new Vector3(2*x,0,2*z);
+        Debug.Log("x= "+x+" "+ "z= " + z);
+
         GameObject spawnedClone = Instantiate(clone, partyHolder.transform);
         spawnedClone.transform.position += newCom;
         //PCloneCounter++;
