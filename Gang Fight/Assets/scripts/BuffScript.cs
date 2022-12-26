@@ -20,7 +20,7 @@ public class BuffScript : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "PartyHolder")
+        if (other.gameObject == gameHandler.avatarList[0])
         {
             switch (type)
             {

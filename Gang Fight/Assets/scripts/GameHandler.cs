@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System;
 
 public class GameHandler : MonoBehaviour
 {
     public GameObject MainPAvatar;
     public GameObject clone;
-    public GameObject partyHolder;
+    //public GameObject partyHolder;
     public List<GameObject> avatarList;
     public bool permission1;
     public int PCloneCounter;
@@ -25,11 +26,15 @@ public class GameHandler : MonoBehaviour
     public PaletteData pdata;
     public string paletteDataFileName;
     public List<PaletteData> paletteDataList=new List<PaletteData>();
+    private float timer=0.5f;
+    private float timeToJump=0;
+    private Transform partyHolder;
 
     void Start()
     {
         
         lastEndPosition = levelPartStart.Find("EndPosition").position;
+        partyHolder = GameObject.Find("PartyHolder").transform;
         //SpawnLevel();
         LevelBuilder(5);
         pdata = SaveSystem.ReadFromJSON<PaletteData>(paletteDataFileName);
@@ -72,6 +77,32 @@ public class GameHandler : MonoBehaviour
 
 
         }
+        /*if (Input.GetKeyDown(KeyCode.Space))
+        {
+
+            /*int x = 0;
+            myForLoop(x, avatarList.Count, () => {
+                StartCoroutine(jumpDelay(1f, () => {
+                    
+                    x++;
+
+                }));
+                x = 0;
+            });
+
+
+            for (int b = 0; b < avatarList.Count;b++)
+            {
+                JumpFunc(b);
+
+
+            }
+            if (gameObject.tag == "Avatar")
+            {
+                //rigBody.AddForce(new Vector3(0, 7, 0), ForceMode.Impulse);
+            }
+        }*/
+        
         //Debug.Log(partyOnGround);
         //debug.log(partyOnGround);
     }
@@ -83,12 +114,12 @@ public class GameHandler : MonoBehaviour
     private void SpawnPClone()
     {
         //MainPAvatar.GetComponent<Rigidbody>().isKinematic = true;
-        float x = Random.Range(-0.5f, 0.5f);
-        float z = Random.Range(-0.5f, 0.5f);
+        float x = UnityEngine.Random.Range(-0.5f, 0.5f);
+        float z = UnityEngine.Random.Range(-0.5f, 0.5f);
         Vector3 newCom=new Vector3(2*x,0,2*z);
         Debug.Log("x= "+x+" "+ "z= " + z);
 
-        GameObject spawnedClone = Instantiate(clone, partyHolder.transform);
+        GameObject spawnedClone = Instantiate(clone, avatarList[0].transform);
         spawnedClone.transform.position += newCom;
         //PCloneCounter++;
         
@@ -111,7 +142,7 @@ public class GameHandler : MonoBehaviour
     {
         if (playNum <= 10)
         {
-            int x = Random.Range(1, 4);
+            int x = UnityEngine.Random.Range(1, 4);
             for(int i = 0; i < x; i++)
             {
                 SpawnLevel();
@@ -119,7 +150,7 @@ public class GameHandler : MonoBehaviour
         }
         if (playNum > 10&&playNum<=20)
         {
-            int x = Random.Range(2, 5);
+            int x = UnityEngine.Random.Range(2, 5);
             for (int i = 0; i < x; i++)
             {
                 SpawnLevel();
@@ -127,7 +158,7 @@ public class GameHandler : MonoBehaviour
         }
         if (playNum > 20)
         {
-            int x = Random.Range(3, 6);
+            int x = UnityEngine.Random.Range(3, 6);
             for (int i = 0; i < x; i++)
             {
                 SpawnLevel();
@@ -144,16 +175,41 @@ public class GameHandler : MonoBehaviour
     }
     private void SpawnFinish()
     {
-        Transform spawnedEnd =Instantiate(EndLevelPart1,lastEndPosition + new Vector3(0, -10, 11), Quaternion.identity);
+        Transform spawnedEnd =Instantiate(EndLevelPart1,lastEndPosition + new Vector3(0, -10, 13), Quaternion.identity);
         spawnedEnd.eulerAngles = new Vector3(0, 180, 0);
+        partyHolder.transform.position = spawnedEnd.position;
         EndLine.SetActive(true);
         
         
     }
     private Transform SpawnLevelPart(Vector3 spawnPosition)
     {
-        int x = Random.Range(0, 5);
+        int x = UnityEngine.Random.Range(0, 5);
         Transform levelPartTransform=Instantiate(levelPartList[x], spawnPosition+new Vector3(0,-0.01f,0), Quaternion.identity);
         return levelPartTransform;
+    }
+    private void JumpFunc(int x)
+    {
+        if (avatarList[avatarList.Count - x-1].GetComponent<Movement>().onGroundCheck == true)
+        {
+            avatarList[avatarList.Count - x-1].GetComponent<Rigidbody>().AddForce(new Vector3(0, 7, 0), ForceMode.Impulse);
+
+
+        }
+    }
+    IEnumerator jumpDelay(float x,Action action)
+    {
+        yield return new WaitForSeconds(x);
+        action();
+    }
+    private void myForLoop(int x,int y,Action function)
+    {
+        if(x < y)
+        {
+            function();
+            
+            
+        }
+
     }
 }

@@ -14,19 +14,25 @@ public class Movement : MonoBehaviour
     private GameHandler gameHandler;
     [SerializeField] private List<GameObject> colorBomb;
     private Transform partyHolder;
-
-    private bool onGroundCheck;
+    [SerializeField]private GameObject spawnEffect;
+    public bool onGroundCheck;
+    [SerializeField] private List<Material> colors;
+    private GameObject humanoidChild;
 
     // Start is called before the first frame update
     void Start()
     {
         gameHandler = GameObject.Find("GameHandler").GetComponent<GameHandler>();
+        humanoidChild=transform.GetChild(1).gameObject;
+        humanoidChild.GetComponent<SkinnedMeshRenderer>().material = colors[UnityEngine.Random.Range(0,colors.Count)];
         if (gameObject.tag == "Avatar")
         {
             gameHandler.avatarList.Add(gameObject);
             gameHandler.PCloneCounter++;
         }
+
         partyHolder = GameObject.Find("PartyHolder").transform;
+        Instantiate(spawnEffect, gameObject.transform);
     }
 
     // Update is called once per frame
@@ -53,17 +59,17 @@ public class Movement : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            for(int x = 0; x < gameHandler.avatarList.Count; x++)
+            /*for(int x = 0; x < gameHandler.avatarList.Count; x++)
             {
                 if (gameHandler.avatarList[gameHandler.avatarList.Count-x-1].GetComponent<Movement>().onGroundCheck == true)
                 {
                     //if(Time.deltaTime)
                     gameHandler.avatarList[gameHandler.avatarList.Count - x-1].GetComponent<Rigidbody>().AddForce(new Vector3(0, 3, 0), ForceMode.Impulse);
                 }
-            }
+            }*/
             if (gameObject.tag == "Avatar")
             {
-                //rigBody.AddForce(new Vector3(0, 7, 0), ForceMode.Impulse);
+                rigBody.AddForce(new Vector3(0, 7, 0), ForceMode.Impulse);
             }
         }
 
@@ -79,9 +85,16 @@ public class Movement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        rigBody.velocity = new Vector3(moveDir.x,rigBody.velocity.y,moveDir.z);
+        if (gameObject.tag == "Avatar")
+        {
+            
+        }
+        rigBody.velocity = new Vector3(moveDir.x, rigBody.velocity.y, moveDir.z);
+        if (gameObject.tag == "PartyHolder")
+        {
+            //transform.position = gameHandler.avatarList[0].GetComponent<Rigidbody>().position*Time.time;
+        }
 
-        
 
     }
     /*private void colCheck(Collision col)
@@ -109,7 +122,14 @@ public class Movement : MonoBehaviour
                 case "Palette":
                     Debug.Log("!!!!!!!!!!!!");
                     int randNum=Random.Range(0, colorBomb.Count);
-                    Instantiate(colorBomb[randNum], partyHolder);
+                    if (gameHandler.avatarList[0] == gameObject)
+                    {
+                        for(int y=0; y < gameHandler.PCloneLimit; y++)
+                        {
+                            Instantiate(colorBomb[randNum], partyHolder);
+                        }
+                    }
+                    //
                     Destroy(gameObject);
                     break;
                 case "Obstcale":
@@ -122,6 +142,8 @@ public class Movement : MonoBehaviour
                 
 
             }
+            
+
             /*if (collision.transform.tag == "Obstcale")
             {
                 
@@ -172,7 +194,12 @@ public class Movement : MonoBehaviour
 
     private void OnDestroy()
     {
-        gameHandler.PCloneCounter--;
-        gameHandler.avatarList.Remove(gameObject);
+        if (gameObject.tag == "Avatar")
+        {
+            gameHandler.PCloneCounter--;
+            gameHandler.avatarList.Remove(gameObject);
+
+        }
+        
     }
 }

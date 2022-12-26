@@ -7,10 +7,12 @@ public class EndLine : MonoBehaviour
 {
     private Camera cam;
     private CameraFollow camFollow;
+    private GameHandler gameHandler;
     // Start is called before the first frame update
     void Start()
     {
-        cam= Camera.main;
+        gameHandler = GameObject.Find("GameHandler").GetComponent<GameHandler>();
+        cam = Camera.main;
         camFollow=cam.GetComponent<CameraFollow>();
     }
 
@@ -22,7 +24,7 @@ public class EndLine : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "PartyHolder")
+        if (other.gameObject == gameHandler.avatarList[0])
         {
             camFollow.ChangeCam();
 
