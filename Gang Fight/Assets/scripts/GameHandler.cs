@@ -30,15 +30,45 @@ public class GameHandler : MonoBehaviour
     private float timeToJump=0;
     private Transform partyHolder;
 
-    void Start()
+    private void Awake()
     {
+        paletteDataList= SaveSystem.ReadListFromJSON<PaletteData>("listdata.json");
+
         
+        /*if (paletteDataList.Contains(pdata))
+        {
+            Debug.Log(222);
+        }*/
         lastEndPosition = levelPartStart.Find("EndPosition").position;
         partyHolder = GameObject.Find("PartyHolder").transform;
         //SpawnLevel();
         LevelBuilder(5);
-        pdata = SaveSystem.ReadFromJSON<PaletteData>(paletteDataFileName);
+    }
+    void Start()
+    {
+
         
+
+        if (paletteDataList.Count>=1)
+        {
+            
+            if (paletteDataList.Contains(pdata))
+            {
+                Debug.Log("ooooooooo");
+                int index=paletteDataList.IndexOf(pdata);
+                pdata= paletteDataList[index];
+            }
+            else
+            {
+                Debug.Log("moshimoshi");
+                pdata = SaveSystem.ReadFromJSON<PaletteData>(paletteDataFileName);
+            }
+        }
+        if (paletteDataList.Count == 0)
+        {
+            Debug.Log(paletteDataList.Count);
+            pdata = SaveSystem.ReadFromJSON<PaletteData>(paletteDataFileName);
+        }
 
 
 
@@ -68,15 +98,46 @@ public class GameHandler : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.O))
         {
-            pdata = new PaletteData(currentPalette);
-            SaveSystem.SaveToJSON<PaletteData>(pdata, paletteDataFileName);
+            //pdata = new PaletteData(currentPalette);
+            
 
             PaletteData palette= new PaletteData(currentPalette);
-            paletteDataList.Add(palette);
+            //paletteDataList.Add(palette);        
+
+            if (paletteDataList.Contains(pdata)==false)
+            {
+                Debug.Log("bbbbbbbb");
+                pdata = new PaletteData(currentPalette);
+            }
+            if (paletteDataList.Contains(pdata))
+            {
+                Debug.Log("çaçaaçaçaça");
+                
+                int index = paletteDataList.IndexOf(pdata);
+                paletteDataList[index].picName = currentPalette.picName;
+                paletteDataList[index].rgbaValues[0] = currentPalette.maxr;
+                paletteDataList[index].rgbaValues[1]= currentPalette.maxg;
+                paletteDataList[index].rgbaValues[2] = currentPalette.maxb;
+                paletteDataList[index].rgbaValues[3] = currentPalette.maxa;
+
+                Debug.Log(pdata.rgbaValues[0]);
+            }
+            else
+            {
+                paletteDataList.Add(pdata);
+            }
             SaveSystem.SaveToJSON<PaletteData>(paletteDataList, "listdata.json");
-
-
         }
+
+        foreach(GameObject gameObject in avatarList)
+        {
+            if(gameObject.GetComponent<Movement>().onGroundCheck)
+            {
+                partyOnGround = true;
+
+            }
+        }
+
         /*if (Input.GetKeyDown(KeyCode.Space))
         {
 
@@ -188,28 +249,5 @@ public class GameHandler : MonoBehaviour
         Transform levelPartTransform=Instantiate(levelPartList[x], spawnPosition+new Vector3(0,-0.01f,0), Quaternion.identity);
         return levelPartTransform;
     }
-    private void JumpFunc(int x)
-    {
-        if (avatarList[avatarList.Count - x-1].GetComponent<Movement>().onGroundCheck == true)
-        {
-            avatarList[avatarList.Count - x-1].GetComponent<Rigidbody>().AddForce(new Vector3(0, 7, 0), ForceMode.Impulse);
-
-
-        }
-    }
-    IEnumerator jumpDelay(float x,Action action)
-    {
-        yield return new WaitForSeconds(x);
-        action();
-    }
-    private void myForLoop(int x,int y,Action function)
-    {
-        if(x < y)
-        {
-            function();
-            
-            
-        }
-
-    }
+    
 }

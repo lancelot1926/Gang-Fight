@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 public class ColorManager : MonoBehaviour
@@ -20,6 +21,10 @@ public class ColorManager : MonoBehaviour
     public List<Material> picList;
     public string matName;
     // Start is called before the first frame update
+    private void Awake()
+    {
+        
+    }
     void Start()
     {
         meshRenderer= GetComponent<MeshRenderer>();
@@ -28,9 +33,11 @@ public class ColorManager : MonoBehaviour
         droppedClones = 0;
         material = gameObject.GetComponent<MeshRenderer>().material;
         
-        meshRenderer.material = picList[0];
+        meshRenderer.material = picList[2];
         matName = meshRenderer.material.name;
-        if (matName.Contains("Marin"))
+        picName=matName.Substring(0,matName.IndexOf("Mat"));
+        Debug.Log(picName);
+        /*if (matName.Contains("Marin"))
         {
             Debug.Log("Marinnnnnnn");
             picName = "Marin";
@@ -39,10 +46,10 @@ public class ColorManager : MonoBehaviour
         {
             Debug.Log("Rennaaaaaa");
             picName = "Renna";
-        }
+        }*/
         if (gmHandler.pdata != null)
         {
-            Debug.Log(gmHandler.pdata.rgbaValues[0]);
+            //Debug.Log(gmHandler.pdata.rgbaValues[0]);
             maxr = gmHandler.pdata.rgbaValues[0];
             maxg = gmHandler.pdata.rgbaValues[1];
             maxb = gmHandler.pdata.rgbaValues[2];
@@ -53,7 +60,13 @@ public class ColorManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(Input.GetKeyUp(KeyCode.Escape)) {
+            droppedClones++;
+            maxr += 5;
+            maxg += 5;
+            maxb += 5;
+            maxa += 5;
+        }
         
         if (r <= maxr && g <= maxg && b <= maxb && a <= maxa)
         {
@@ -69,6 +82,11 @@ public class ColorManager : MonoBehaviour
     public void SetEndPic(PaletteData pData)
     {
 
+    }
+
+    private void SetName()
+    {
+        
     }
 
     private void OnCollisionEnter(Collision collision)

@@ -69,7 +69,11 @@ public class Movement : MonoBehaviour
             }*/
             if (gameObject.tag == "Avatar")
             {
-                rigBody.AddForce(new Vector3(0, 7, 0), ForceMode.Impulse);
+                if(gameHandler.partyOnGround)
+                {
+                    rigBody.AddForce(new Vector3(0, 7, 0), ForceMode.Impulse);
+                }
+                
             }
         }
 
