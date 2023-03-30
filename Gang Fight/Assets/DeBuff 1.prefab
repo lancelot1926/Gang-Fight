@@ -211,6 +211,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: Debuff
   value: 1
+  text: {fileID: 7880677100123976148}
 --- !u!1 &3465861834679710907
 GameObject:
   m_ObjectHideFlags: 0

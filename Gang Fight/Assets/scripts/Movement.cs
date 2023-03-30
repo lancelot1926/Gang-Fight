@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR;
 
 public class Movement : MonoBehaviour
 {
@@ -11,6 +12,9 @@ public class Movement : MonoBehaviour
     public float moveX;
     public float moveY;
     public float moveZ;
+    private Vector3 lastFingerPos;
+    private Vector3 fingerPos;
+    private Vector3 newPosForTrans;
     private GameHandler gameHandler;
     [SerializeField] private List<GameObject> colorBomb;
     private Transform partyHolder;
@@ -18,6 +22,11 @@ public class Movement : MonoBehaviour
     public bool onGroundCheck;
     [SerializeField] private List<Material> colors;
     private GameObject humanoidChild;
+    private Vector3 mousePosition;
+    private float horizontal;
+
+    private const float DoubleClickTime = 0.2f;
+    private float lastClickTime;
 
     // Start is called before the first frame update
     void Start()
@@ -38,17 +47,76 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
+        //Vector3 goRight = new Vector3(3f, transform.position.y, transform.position.z);
+        //Vector3 goLeft = new Vector3(-3f, transform.position.y, transform.position.z);
         moveX = 0f;
         moveY = 0f;
-        moveZ = 0f;
-        if (Input.GetKey(KeyCode.W))
+        moveZ = 1f;
+
+
+        /*if(Input.touchCount> 0)
         {
-            moveZ = +1f;
-        }
-        if (Input.GetKey(KeyCode.S))
+            Touch finger =Input.GetTouch(0);
+            fingerPos =Camera.main.ScreenToWorldPoint(finger.position);
+            fingerPos.z = 0;
+
+            float xDiff = fingerPos.x - lastFingerPos.x;
+
+            newPosForTrans.x = transform.position.x + xDiff * Time.deltaTime * 5;
+            newPosForTrans.y = transform.position.y;
+            newPosForTrans.z= transform.position.z;
+            
+            transform.position = fingerPos*5*Time.deltaTime;
+            //lastFingerPos= fingerPos;
+
+            if (finger.deltaPosition.x > 1.0f)
+            {
+                //transform.position = Vector3.Lerp(transform.position,goRight , 5 * Time.deltaTime);
+                //moveX = +1f;
+            }
+            if (finger.deltaPosition.x < -1.0f)
+            {
+                //transform.position = Vector3.Lerp(transform.position, goLeft, 5 * Time.deltaTime);
+                //moveX = -1f;
+            }
+        }*/
+
+        if (Input.GetMouseButtonDown(0))
         {
-            moveZ = -1f;
+            mousePosition = Input.mousePosition;
+
+            float timeSinceLastClick = Time.time - lastClickTime;
+            if(timeSinceLastClick <= DoubleClickTime) {
+                if (gameObject.tag == "Avatar")
+                {
+                    if (gameHandler.partyOnGround)
+                    {
+                        rigBody.AddForce(new Vector3(0, 7, 0), ForceMode.Impulse);
+                    }
+
+                }
+            }
+
+            lastClickTime=Time.time;
         }
+        else if (Input.GetMouseButton(0))
+        {
+
+            horizontal = (Input.mousePosition.x - mousePosition.x) / Screen.width * 2.5f;
+           
+            mousePosition = Input.mousePosition;
+        }
+        else
+        {
+            horizontal = 0;
+        }
+
+        //transform.position = new Vector3(Mathf.Clamp(transform.position.x + (370 * horizontal * Time.deltaTime), -3f, 3f), transform.position.y,transform.position.z);
+       
+
+
+
         if (Input.GetKey(KeyCode.A))
         {
             moveX = -1f;
@@ -93,7 +161,7 @@ public class Movement : MonoBehaviour
         {
             
         }
-        rigBody.velocity = new Vector3(moveDir.x, rigBody.velocity.y, moveDir.z);
+        //rigBody.velocity = new Vector3(moveDir.x, rigBody.velocity.y, moveDir.z);
         if (gameObject.tag == "PartyHolder")
         {
             //transform.position = gameHandler.avatarList[0].GetComponent<Rigidbody>().position*Time.time;
@@ -134,13 +202,64 @@ public class Movement : MonoBehaviour
                         }
                     }
                     //
-                    Destroy(gameObject);
+                    if (gameObject != gameHandler.avatarList[0])
+                    {
+                        gameHandler.avatarList.Remove(gameObject);
+                        gameHandler.PCloneLimit--;
+                        Destroy(gameObject);
+                    }
+                    if (gameObject == gameHandler.avatarList[0] && gameHandler.avatarList.Count > 1)
+                    {
+
+                        gameHandler.MainPAvatar = gameHandler.avatarList[1];
+                        //gameHandler.avatarList[1].transform.parent = null;
+                        gameHandler.MainPAvatar = gameHandler.avatarList[0];
+                        /*for (int x = 2; x < gameHandler.avatarList.Count; x++)
+                        {
+                            gameHandler.avatarList[x].transform.parent = gameHandler.avatarList[1].transform;
+                        }*/
+                        gameHandler.avatarList.Remove(gameObject);
+                        gameHandler.PCloneLimit--;
+
+                        Destroy(gameObject);
+                    }
+                    if (gameObject == gameHandler.avatarList[0] && gameHandler.avatarList.Count == 1)
+                    {
+                        gameHandler.avatarList.Remove(gameObject);
+                        gameHandler.PCloneLimit--;
+                        Destroy(gameObject);
+                    }
                     break;
                 case "Obstcale":
                     Debug.Log("!!!!!!!!!!!!");
-                    gameHandler.avatarList.Remove(gameObject);
-                    gameHandler.PCloneLimit--;
-                    Destroy(gameObject);
+                    if (gameObject != gameHandler.avatarList[0])
+                    {
+                        gameHandler.avatarList.Remove(gameObject);
+                        gameHandler.PCloneLimit--;
+                        Destroy(gameObject);
+                    }
+                    if (gameObject == gameHandler.avatarList[0] && gameHandler.avatarList.Count > 1)
+                    {
+
+                        gameHandler.MainPAvatar = gameHandler.avatarList[1];
+                        //gameHandler.avatarList[1].transform.parent = null;
+                        gameHandler.MainPAvatar = gameHandler.avatarList[0];
+                        /*for (int x = 2; x < gameHandler.avatarList.Count; x++)
+                        {
+                            gameHandler.avatarList[x].transform.parent = gameHandler.avatarList[1].transform;
+                        }*/
+                        gameHandler.avatarList.Remove(gameObject);
+                        gameHandler.PCloneLimit--;
+                        
+                        Destroy(gameObject);
+                    }
+                    if (gameObject == gameHandler.avatarList[0] && gameHandler.avatarList.Count == 1)
+                    {
+                        gameHandler.avatarList.Remove(gameObject);
+                        gameHandler.PCloneLimit--;
+                        Destroy(gameObject);
+                    }
+
                     break;
 
                 

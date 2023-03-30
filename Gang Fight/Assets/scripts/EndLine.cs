@@ -24,7 +24,7 @@ public class EndLine : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject == gameHandler.avatarList[0])
+        if (other.gameObject == gameHandler.avatarList[0]&&gameHandler.avatarList.Count>0)
         {
             camFollow.ChangeCam();
 

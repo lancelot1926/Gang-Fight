@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System;
+using UnityEngine.Assertions.Must;
 
 public class GameHandler : MonoBehaviour
 {
@@ -29,12 +30,56 @@ public class GameHandler : MonoBehaviour
     private float timer=0.5f;
     private float timeToJump=0;
     private Transform partyHolder;
+    public  bool isGameOver=false;
+    public static int runCount;
 
+    private enum PicStates
+    {
+        None,Ongoing
+    }
+    private PicStates state;
+
+    
     private void Awake()
     {
         paletteDataList= SaveSystem.ReadListFromJSON<PaletteData>("listdata.json");
-
         
+
+        if (paletteDataList.Count >= 1)
+        {
+            if (paletteDataList.Last().isItFull == false)
+            {
+                pdata = paletteDataList.Last();
+            }
+            if(paletteDataList.Last().isItFull == true)
+            {
+                pdata = null;
+            }
+
+             // come back and change this later with some better mindset good luck 
+            // future me you need to fix this it prevents stacking pdata in that damn list
+
+            /*if (pdata.rgbaValues[0] < 255f)
+            {
+                pdata.isItFull = false;
+                Debug.Log("notFullBaby");
+            }
+            if (pdata.rgbaValues[0] >= 255f)
+            {
+                Debug.Log("it was full baby");
+
+                pdata.isItFull= true;
+
+                
+            }*/
+            
+           
+        }
+        if (paletteDataList.Count == 0)
+        {
+            Debug.Log(paletteDataList.Count);
+            pdata = SaveSystem.ReadFromJSON<PaletteData>(paletteDataFileName);
+        }
         /*if (paletteDataList.Contains(pdata))
         {
             Debug.Log(222);
@@ -42,33 +87,19 @@ public class GameHandler : MonoBehaviour
         lastEndPosition = levelPartStart.Find("EndPosition").position;
         partyHolder = GameObject.Find("PartyHolder").transform;
         //SpawnLevel();
-        LevelBuilder(5);
+        
+        int passedNum= UnityEngine.Random.Range(1, 9);
+        Debug.Log(passedNum);
+        
+        LevelBuilder(passedNum);
     }
     void Start()
     {
 
-        
+        runCount++;
+        Debug.Log(runCount);
 
-        if (paletteDataList.Count>=1)
-        {
-            
-            if (paletteDataList.Contains(pdata))
-            {
-                Debug.Log("ooooooooo");
-                int index=paletteDataList.IndexOf(pdata);
-                pdata= paletteDataList[index];
-            }
-            else
-            {
-                Debug.Log("moshimoshi");
-                pdata = SaveSystem.ReadFromJSON<PaletteData>(paletteDataFileName);
-            }
-        }
-        if (paletteDataList.Count == 0)
-        {
-            Debug.Log(paletteDataList.Count);
-            pdata = SaveSystem.ReadFromJSON<PaletteData>(paletteDataFileName);
-        }
+       
 
 
 
@@ -80,7 +111,7 @@ public class GameHandler : MonoBehaviour
         if (PCloneCounter < PCloneLimit)
         {
 
-            if (partyOnGround == true)
+            if (partyOnGround == true && avatarList[0]!=null)
             {
                 SpawnPClone();
             }
@@ -96,42 +127,31 @@ public class GameHandler : MonoBehaviour
 
 
         }
-        if (Input.GetKeyDown(KeyCode.O))
+        if(PCloneCounter==0)
         {
-            //pdata = new PaletteData(currentPalette);
+            isGameOver= true;
+        }
+        if(Input.GetKeyDown(KeyCode.P))
+        {
+            int ranNum = UnityEngine.Random.Range(0, 55);
+            currentPalette.meshRenderer.material = currentPalette.picList[ranNum];
+            currentPalette.matName = currentPalette.meshRenderer.material.name;
+            currentPalette.picName= currentPalette.matName.Substring(0, currentPalette.matName.IndexOf("Mat"));
+            currentPalette.r = 0;
+            currentPalette.g = 0;
+            currentPalette.b = 0;
+            currentPalette.a = 0;
+            currentPalette.maxr = 0;
+            currentPalette.maxg = 0;
+            currentPalette.maxb = 0;
+            currentPalette.maxa = 0;
             
-
-            PaletteData palette= new PaletteData(currentPalette);
-            //paletteDataList.Add(palette);        
-
-            if (paletteDataList.Contains(pdata)==false)
-            {
-                Debug.Log("bbbbbbbb");
-                pdata = new PaletteData(currentPalette);
-            }
-            if (paletteDataList.Contains(pdata))
-            {
-                Debug.Log("çaçaaçaçaça");
-                
-                int index = paletteDataList.IndexOf(pdata);
-                paletteDataList[index].picName = currentPalette.picName;
-                paletteDataList[index].rgbaValues[0] = currentPalette.maxr;
-                paletteDataList[index].rgbaValues[1]= currentPalette.maxg;
-                paletteDataList[index].rgbaValues[2] = currentPalette.maxb;
-                paletteDataList[index].rgbaValues[3] = currentPalette.maxa;
-
-                Debug.Log(pdata.rgbaValues[0]);
-            }
-            else
-            {
-                paletteDataList.Add(pdata);
-            }
-            SaveSystem.SaveToJSON<PaletteData>(paletteDataList, "listdata.json");
+            Debug.Log(currentPalette.meshRenderer.material.name);
         }
 
-        foreach(GameObject gameObject in avatarList)
+        foreach (GameObject gameObject in avatarList)
         {
-            if(gameObject.GetComponent<Movement>().onGroundCheck)
+            if (gameObject.GetComponent<Movement>().onGroundCheck)
             {
                 partyOnGround = true;
 
@@ -163,7 +183,7 @@ public class GameHandler : MonoBehaviour
                 //rigBody.AddForce(new Vector3(0, 7, 0), ForceMode.Impulse);
             }
         }*/
-        
+
         //Debug.Log(partyOnGround);
         //debug.log(partyOnGround);
     }
@@ -180,7 +200,7 @@ public class GameHandler : MonoBehaviour
         Vector3 newCom=new Vector3(2*x,0,2*z);
         Debug.Log("x= "+x+" "+ "z= " + z);
 
-        GameObject spawnedClone = Instantiate(clone, avatarList[0].transform);
+        GameObject spawnedClone = Instantiate(clone, avatarList[0].transform.parent);
         spawnedClone.transform.position += newCom;
         //PCloneCounter++;
         
@@ -189,45 +209,21 @@ public class GameHandler : MonoBehaviour
 
     private void RemovePClone()
     {
-        GameObject avatar = avatarList.Last();
-        //PCloneCounter--;
-        avatarList.Remove(avatar);
-        Destroy(avatar);
+        if (isGameOver == false)
+        {
+            GameObject avatar = avatarList.Last();
+            //PCloneCounter--;
+            avatarList.Remove(avatar);
+            Destroy(avatar);
+        }
+        
 
 
 
 
     }
 
-    private void LevelBuilder(int playNum)
-    {
-        if (playNum <= 10)
-        {
-            int x = UnityEngine.Random.Range(1, 4);
-            for(int i = 0; i < x; i++)
-            {
-                SpawnLevel();
-            }
-        }
-        if (playNum > 10&&playNum<=20)
-        {
-            int x = UnityEngine.Random.Range(2, 5);
-            for (int i = 0; i < x; i++)
-            {
-                SpawnLevel();
-            }
-        }
-        if (playNum > 20)
-        {
-            int x = UnityEngine.Random.Range(3, 6);
-            for (int i = 0; i < x; i++)
-            {
-                SpawnLevel();
-               
-            }
-        }
-        SpawnFinish();
-    }
+    
     private void SpawnLevel()
     {
         Transform lastLevelPosition = SpawnLevelPart(lastEndPosition);
@@ -249,5 +245,84 @@ public class GameHandler : MonoBehaviour
         Transform levelPartTransform=Instantiate(levelPartList[x], spawnPosition+new Vector3(0,-0.01f,0), Quaternion.identity);
         return levelPartTransform;
     }
-    
+    private void LevelBuilder(int playNum)
+    {
+        if (playNum <= 3)
+        {
+            int x = UnityEngine.Random.Range(1, 4);
+            for (int i = 0; i < x; i++)
+            {
+                SpawnLevel();
+            }
+        }
+        if (playNum > 3 && playNum <= 7)
+        {
+            int x = UnityEngine.Random.Range(2, 5);
+            for (int i = 0; i < x; i++)
+            {
+                SpawnLevel();
+            }
+        }
+        if (playNum > 7)
+        {
+            int x = UnityEngine.Random.Range(3, 6);
+            for (int i = 0; i < x; i++)
+            {
+                SpawnLevel();
+
+            }
+        }
+        SpawnFinish();
+    }
+
+   
+
+    public void SaveTheGame()
+    {
+        //pdata = new PaletteData(currentPalette);
+
+
+        PaletteData palette = new PaletteData(currentPalette);
+        //paletteDataList.Add(palette);        
+
+        if (paletteDataList.Contains(pdata) == false)
+        {
+            Debug.Log("bbbbbbbb");
+            pdata = new PaletteData(currentPalette);
+            paletteDataList.Add(pdata);
+        }
+        if (paletteDataList.Contains(pdata))
+        {
+            Debug.Log("çaçaaçaçaça");
+
+            int index = paletteDataList.IndexOf(pdata);
+            paletteDataList[index].picName = currentPalette.picName;
+            paletteDataList[index].rgbaValues[0] = currentPalette.maxr;
+            paletteDataList[index].rgbaValues[1] = currentPalette.maxg;
+            paletteDataList[index].rgbaValues[2] = currentPalette.maxb;
+            paletteDataList[index].rgbaValues[3] = currentPalette.maxa;
+
+            Debug.Log(pdata.rgbaValues[0]);
+        }
+        else
+        {
+
+        }
+        if (pdata.rgbaValues[0] < 255f)
+        {
+            pdata.isItFull = false;
+            Debug.Log("notFullBaby");
+        }
+        if (pdata.rgbaValues[0] >= 255f)
+        {
+            Debug.Log("it was full baby");
+
+            pdata.isItFull = true;
+
+
+        }
+        SaveSystem.SaveToJSON<PaletteData>(paletteDataList, "listdata.json");
+
+
+    }
 }

@@ -248,6 +248,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: Buff
   value: 2
+  text: {fileID: 2586833160262884084}
 --- !u!1 &2545345236456247029
 GameObject:
   m_ObjectHideFlags: 0

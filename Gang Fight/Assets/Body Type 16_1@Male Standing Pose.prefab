@@ -1148,6 +1148,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5107248528865394198}
+  - component: {fileID: 6459380220319936189}
+  - component: {fileID: 7361130350002465244}
   m_Layer: 0
   m_Name: spine
   m_TagString: Untagged
@@ -1175,6 +1177,35 @@ Transform:
   m_Father: {fileID: 8899804027123225659}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &6459380220319936189
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6610918425378111977}
+  serializedVersion: 2
+  m_Mass: 0.0000001
+  m_Drag: 0
+  m_AngularDrag: 0
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 126
+  m_CollisionDetection: 0
+--- !u!65 &7361130350002465244
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6610918425378111977}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.51847166, y: 2.997807, z: 0.41454473}
+  m_Center: {x: -0.01850703, y: -0.9988983, z: 0.07405371}
 --- !u!1 &6611489859806980721
 GameObject:
   m_ObjectHideFlags: 0
